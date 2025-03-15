@@ -104,10 +104,9 @@ jobs:
         env:
           AWS_EC2_IP: ${{ secrets.AWS_EC2_IP }}
           AWS_EC2_USER: ${{ secrets.AWS_EC2_USER }}
+          SSH_AUTH_SOCK: ${{ secrets.SSH_AUTH_SOCK }}
         run: |
           scp -o StrictHostKeyChecking=no docker-compose.yml $AWS_EC2_USER@$AWS_EC2_IP:/home/ubuntu
-        env:
-          SSH_AUTH_SOCK: ${{ secrets.SSH_AUTH_SOCK }}
 
       - name: SSH into remote host and run Docker Compose
         env:
