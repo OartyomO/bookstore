@@ -4,7 +4,7 @@ services:
   server:
     restart: always
     build:
-      context: ./server
+      context: 354918389937.dkr.ecr.us-west-1.amazonaws.com/server
       dockerfile: Dockerfile.dev
     container_name: bookstore_server
     volumes:
@@ -34,7 +34,7 @@ services:
   client:
     restart: always
     build:
-      context: ./client
+      context: 354918389937.dkr.ecr.us-west-1.amazonaws.com/client
       dockerfile: Dockerfile.dev
     container_name: bookstore_client
     volumes:
@@ -51,7 +51,7 @@ services:
       - server
       - client
     build:
-      context: ./nginx
+      context: 354918389937.dkr.ecr.us-west-1.amazonaws.com/nginx
       dockerfile: Dockerfile.dev
     container_name: bookstore_nginx
     ports:
