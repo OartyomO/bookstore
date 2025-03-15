@@ -104,10 +104,14 @@ jobs:
           port: 22
           source: "docker-compose.yml"
           target: "/home/ubuntu/"
-
-      - name: SSH into remote host and run Docker Compose
-        env:
-          AWS_EC2_IP: ${{ secrets.AWS_EC2_IP }}
-          AWS_EC2_USER: ${{ secrets.AWS_EC2_USER }}
-        run: |
-          ssh -o StrictHostKeyChecking=no $AWS_EC2_USER@$AWS_EC2_IP "cd /home/ubuntu && docker-compose up -d"
+          
+      - name: run Docker Compose command
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_IP }}
+          username: ${{ secrets.AWS_EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu
+            docker-compose up -d
