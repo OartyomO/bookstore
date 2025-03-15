@@ -3,9 +3,7 @@ version: '3.9'
 services:
   server:
     restart: always
-    build:
-      image: 354918389937.dkr.ecr.us-west-1.amazonaws.com/server:latest
-      dockerfile: Dockerfile.dev
+    image: 354918389937.dkr.ecr.us-west-1.amazonaws.com/server:latest
     container_name: bookstore_server
     volumes:
       - /app/node_modules
@@ -33,9 +31,7 @@ services:
 
   client:
     restart: always
-    build:
-      image: 354918389937.dkr.ecr.us-west-1.amazonaws.com/client:latest
-      dockerfile: Dockerfile.dev
+    image: 354918389937.dkr.ecr.us-west-1.amazonaws.com/client:latest
     container_name: bookstore_client
     volumes:
       - /app/node_modules
@@ -50,9 +46,7 @@ services:
     depends_on:
       - server
       - client
-    build:
-      image: 354918389937.dkr.ecr.us-west-1.amazonaws.com/nginx:latest
-      dockerfile: Dockerfile.dev
+    image: 354918389937.dkr.ecr.us-west-1.amazonaws.com/nginx:latest
     container_name: bookstore_nginx
     ports:
       - 8080:80
