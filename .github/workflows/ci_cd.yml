@@ -104,7 +104,7 @@ jobs:
           port: 22
           source: "docker-compose.yml"
           target: "/home/ubuntu/"
-          
+
       - name: run Docker Compose command
         uses: appleboy/ssh-action@master
         with:
@@ -114,4 +114,4 @@ jobs:
           port: 22
           script: |
             cd /home/ubuntu
-            docker-compose up -d
+            docker compose up -d
