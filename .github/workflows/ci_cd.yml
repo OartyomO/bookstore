@@ -94,3 +94,24 @@ jobs:
         run: |
           docker tag bookstore_nginx:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NGINX:latest
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY_NGINX:latest
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy docker-compose.yml to remote host
+        env:
+          AWS_EC2_IP: ${{ secrets.AWS_EC2_IP }}
+          AWS_EC2_USER: ${{ secrets.AWS_EC2_USER }}
+        run: |
+          scp -o StrictHostKeyChecking=no docker-compose.yml $AWS_EC2_USER@$AWS_EC2_IP:/home/ubuntu
+        env:
+          SSH_AUTH_SOCK: ${{ secrets.SSH_AUTH_SOCK }}
+
+      - name: SSH into remote host and run Docker Compose
+        env:
+          AWS_EC2_IP: ${{ secrets.AWS_EC2_IP }}
+          AWS_EC2_USER: ${{ secrets.AWS_EC2_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $AWS_EC2_USER@$AWS_EC2_IP "cd /home/ubuntu && docker-compose up -d"

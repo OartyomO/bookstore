@@ -14,6 +14,16 @@ resource "aws_ecr_repository" "my_ecr_repositories" {
   image_tag_mutability = "MUTABLE"  # Options: MUTABLE or IMMUTABLE
 }
 
+resource "aws_instance" "my_ec2" {
+  ami           = "ami-0d413c682033e11fd"
+  instance_type = "t2.micro"
+  key_name      = "my-key"
+
+  tags = {
+    Name = "MyUbuntuEC2Instance"
+  }
+}
+
 # Create lifecycle policies for each ECR repository
 resource "aws_ecr_lifecycle_policy" "my_ecr_lifecycle_policies" {
   for_each = aws_ecr_repository.my_ecr_repositories
