@@ -107,6 +107,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
+            # Update package list and install unzip utility
+            sudo apt-get update
+            sudo apt-get install -y unzip curl
+
             # Check if AWS CLI is installed, if not, install it
             if ! command -v aws &> /dev/null; then
               echo "AWS CLI not found, installing..."
@@ -114,18 +118,19 @@ jobs:
               unzip awscliv2.zip
               sudo ./aws/install
             fi
+
             # Verify AWS CLI installation
             aws --version
 
-            # Configure AWS CLI with credentials (or use IAM role for automatic access)
-            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS }}
-            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_KEY }}
-            aws configure set region ${{ secrets.AWS_REGION }}
+            # Configure AWS CLI with credentials (ensure no interactive prompts)
+            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS }} --no-interactive
+            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_KEY }} --no-interactive
+            aws configure set region ${{ secrets.AWS_REGION }} --no-interactive
 
-            # Verify AWS CLI authentication (e.g., list S3 buckets as a simple check)
+            # Verify AWS CLI authentication by listing S3 buckets (example command)
             aws s3 ls
 
-            # Log in to AWS ECR using the AWS CLI
+            # Log in to AWS ECR using the AWS CLI (non-interactive)
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
             # Run a simple Docker command to check ECR login status
