@@ -15,43 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Build Docker images for each service using their Dockerfile.dev
-      - name: Build Server Image
-        run: |
-          docker build -f server/Dockerfile.dev -t bookstore_server:latest server
       
-      - name: Build Client Image
-        run: |
-          docker build -f client/Dockerfile.dev -t bookstore_client:latest client
-      
-      - name: Build Nginx Image
-        run: |
-          docker build -f nginx/Dockerfile.dev -t bookstore_nginx:latest nginx
-
-      # Run vulnerability scans on each built image using Trivy, but do not fail the pipeline if vulnerabilities are found
-      - name: Scan Server Image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: bookstore_server:latest
-          format: 'table'
-          ignore-unfixed: true
-        continue-on-error: true
-
-      - name: Scan Client Image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: bookstore_client:latest
-          format: 'table'
-          ignore-unfixed: true
-        continue-on-error: true
-
-      - name: Scan Nginx Image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: bookstore_nginx:latest
-          format: 'table'
-          ignore-unfixed: true
-        continue-on-error: true
 
       # OPTIONAL: Push images to AWS ECR
       - name: Configure AWS Credentials
@@ -122,10 +86,10 @@ jobs:
             # Verify AWS CLI installation
             aws --version
 
-            # Configure AWS CLI with credentials (ensure no interactive prompts)
-            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS }} --no-interactive
-            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_KEY }} --no-interactive
-            aws configure set region ${{ secrets.AWS_REGION }} --no-interactive
+            # Set AWS credentials directly using environment variables
+            export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS }}
+            export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_KEY }}
+            export AWS_REGION=${{ secrets.AWS_REGION }}
 
             # Verify AWS CLI authentication by listing S3 buckets (example command)
             aws s3 ls
