@@ -178,6 +178,7 @@ jobs:
           port: 22
           source: "./server"
           target: "/home/ubuntu/"
+          
 
       - name: run Docker Compose command
         uses: appleboy/ssh-action@master
